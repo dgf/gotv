@@ -2,6 +2,8 @@
 
 currently this is just a brain dump of implementation parts
 
+[![Build Status](https://travis-ci.org/dgf/gotv.svg)](https://travis-ci.org/dgf/gotv)
+
 # Packages
 
 ## model
