@@ -1,29 +1,122 @@
 package sgf
 
 import (
+	"bytes"
 	"regexp"
 	"strings"
+	"text/scanner"
 )
 
 var (
-	collectionCleanUp = regexp.MustCompile(`(?m)[ \n]*([A-Z]+)[ \n]*\[[ \n]*((\\\]|[^\]]+)+)*\]`)
-	spaceCleanUp      = regexp.MustCompile(`[ \t\f]+`)
+	spaceRunes = regexp.MustCompile(`[ \t\f]+`)
+	spaceList  = regexp.MustCompile(`[ ]+`)
+	trimLines  = regexp.MustCompile(`[ ]*\n[ ]*`)
 )
 
-// cleanup and parse SGF
-//go:generate nex -s parse.nex
-func Parse(s string) Collection {
+func Parse(sgf string) Collection {
+	c := struct {
+		Collection
+		*GameTree
+		*Node
+		PropIdent string
+	}{}
+
 	// replace all line feed combinations with a single one
 	for _, r := range []string{"\r\n", "\n\r", "\r"} {
-		s = strings.Replace(s, r, "\n", -1)
+		sgf = strings.Replace(sgf, r, "\n", -1)
 	}
 
 	// combine multiple space to a single one
-	s = spaceCleanUp.ReplaceAllString(s, " ")
+	sgf = spaceRunes.ReplaceAllString(sgf, " ")
 
-	// remove all spaces and line feeds from property definitions
-	s = collectionCleanUp.ReplaceAllString(s, "${1}[${2}]")
+	// setup
+	s := scanner.Scanner{}
+	s.Filename = "sgf"
+	s.Init(strings.NewReader(sgf))
+	s.Mode = scanner.ScanIdents | scanner.ScanInts | scanner.ScanFloats | scanner.ScanComments
 
-	// decode precleaned string
-	return parse(s)
+	var t rune
+	for {
+		if t == scanner.EOF || s.Peek() == scanner.EOF {
+			break // this is the end
+		}
+
+		t = s.Scan()
+		switch t {
+		case '(': // sequence
+			if c.GameTree == nil { // root
+				c.GameTree = &GameTree{}
+				c.Collection = append(c.Collection, c.GameTree)
+			} else { // subtree > go down
+				g := &GameTree{Parent: c.GameTree}
+				c.GameTree.Collection = append(c.GameTree.Collection, g)
+				c.GameTree = g
+			}
+
+		case ';': // node
+			c.Node = &Node{Properties: map[string]string{}}
+			c.GameTree.Sequence = append(c.GameTree.Sequence, c.Node)
+
+		case ')': // end > go one up
+			c.Node = nil
+			c.GameTree = c.GameTree.Parent
+		}
+
+		if c.Node != nil && t == scanner.Ident { // property ident
+			c.PropIdent = s.TokenText()
+
+			// skip until [
+			for {
+				if s.Peek() == scanner.EOF {
+					break // this is the end
+				}
+				if s.Scan() == '[' {
+					if "C" == c.PropIdent {
+						s.Whitespace = 0 // skip nothing in comments
+					} else {
+						s.Whitespace = 1 << '\n' // skip line feeds in value
+					}
+					break
+				}
+			}
+
+			// property value (loop until ']')
+			v := bytes.Buffer{}
+			for {
+				t = s.Scan()
+				if t == scanner.EOF || t == ']' {
+					break // this is the end
+				}
+				switch t {
+				case scanner.Ident:
+					v.WriteString(s.TokenText())
+				case scanner.Int:
+					v.WriteString(s.TokenText())
+				case scanner.Float:
+					v.WriteString(s.TokenText())
+				case scanner.Comment:
+					v.WriteString(s.TokenText())
+				case '\\':
+					v.WriteRune(t)       // write \
+					if s.Peek() == ']' { // check escaped end "\]"
+						s.Scan() // write ]
+						v.WriteString(s.TokenText())
+					}
+				default:
+					v.WriteString(s.TokenText())
+				}
+			}
+
+			// clean up and add property value
+			pv := spaceList.ReplaceAllString(v.String(), " ")
+			pv = trimLines.ReplaceAllString(pv, "\n")
+			pv = strings.Trim(pv, " \n")
+			c.Node.Properties[c.PropIdent] = pv
+
+			// reset white spaces ignore
+			s.Whitespace = scanner.GoWhitespace
+		}
+	}
+
+	return c.Collection
 }

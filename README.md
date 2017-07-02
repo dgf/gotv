@@ -16,12 +16,3 @@ supports a straight forward Go game with capturing and KO + suicide detection
 
 parse SGF into generic game tree collection
 
-lexer is generated with [Nex], see also [Structural Regular Expressions]
-
-```sh
-go get github.com/blynn/nex
-go generate
-```
-
-[Nex]: https://github.com/blynn/nex
-[Structural Regular Expressions]: http://doc.cat-v.org/bell_labs/structural_regexps/se.pdf

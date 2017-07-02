@@ -1,6 +1,7 @@
+// test specification examples, see:
+// http://www.red-bean.com/sgf/sgf4.html
+// http://www.red-bean.com/sgf/var.htm
 package sgf_test
-
-// test specification examples, see http://www.red-bean.com/sgf/var.htm
 
 import (
 	"fmt"
@@ -9,20 +10,36 @@ import (
 	"github.com/dgf/gotv/sgf"
 )
 
-// text escaping
-func ExampleParse_Comment() {
-	s := "(;GM[1]SZ[19]FF[4];B[aa]\f\n\r\tC\f\n\r\t [\n \fc\t[o \f\t  m\\]\r\n\tm\\\\e\\:n\n\r (FF[1\\])t\r])"
-	fmt.Println(sgf.Parse(s))
+// SGF basics and property value types clean up
+func ExampleParseCleanup() {
+	for _, a := range []struct {
+		name string
+		sgf  string
+		exp  string
+	}{
+		{"2.1. EBNF spaces", " \n ( \n ; \n AN \n [ebnf] \n ) \n ", "(;AN[ebnf])"},
+		{"3. UcLetter, Digit, None", "(;U[AZ];D[9876543210];N[])", "(;U[AZ];D[9876543210];N[])"},
+		{"3. Number +/-", "(;N[1];N[+1];N[-1])", "(;N[1];N[+1];N[-1])"},
+		{"3. Real +/-", "(;R[0.1];R[+0.2];R[-0.3])", "(;R[0.1];R[+0.2];R[-0.3])"},
+		{"3.1. Double", "(;CB[1];CB[2])", "(;CB[1];CB[2])"},
+		{"3.2. Text escape", `(;C["b\\d\:'e\]])`, `(;C["b\\d\:'e\]])`},
+		{"3.2. Text unicode", "(;C[\xE2\x98\xA0] ", "(;C[☠])"},
+		{"3.2. Text chars", "(;C[?!§$%&/()=?`*'_:;><´+#-.,¹²³¼½¬{[}\\¸~µ@])", "(;C[?!§$%&/()=?`*'_:;><´+#-.,¹²³¼½¬{[}\\¸~µ@])"},
+		{"3.2. Text feeds", "(;C[ \f \n\r \r \r\n \t t \f\t\r e \f\t x \t\f\n t \f \n\r \r \r\n \t ])", "(;C[t\ne x\nt])"},
+		{"3.2. Text comments", "(;C[ /* \f\n\r\t comment \f\n\r\t*/ ])", "(;C[/*\ncomment\n*/])"},
+		{"3.3. SimpleText spaces", "(;AN[ \f\n\t\r s \f\t\n\t\f p \n\r a\rc \f\r\t e \n s])", "(;AN[s p ac e s])"},
+	} {
+		gs := sgf.Parse(a.sgf).String()
+		if a.exp != gs {
+			fmt.Printf("invalid %s cleanup: \nEXP: %s\nACT: %s\n", a.name, a.exp, gs)
+		}
+	}
 	// Output:
-	// (;FF[4]GM[1]SZ[19];B[aa]C[c [o m\]
-	//  m\\e\:n
-	//  (FF[1\])t
-	// ])
 }
 
-// No Variation, with unsorted properties and nearly all possible space and line feed combinations
+// No Variation
 func ExampleParse_NoVariation() {
-	s := "\n(\r;\tGM [\n1\r]\nSZ\r[\t19\n]\rFF\n[\r4\t]\n;\rB\t[\naa\r]\t;\nW\r[\tbb\n]\r;\tB [ cc ]\n\r\t\r\n)"
+	s := "(;GM[1]SZ[19]FF[4];B[aa];W[bb];B[cc])"
 	fmt.Println(sgf.Parse(s))
 	// Output:
 	// (;FF[4]GM[1]SZ[19];B[aa];W[bb];B[cc])
