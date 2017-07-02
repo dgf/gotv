@@ -23,5 +23,5 @@ go get github.com/blynn/nex
 go generate
 ```
 
-[Nex](https://github.com/blynn/nex)
-[Structural Regular Expressions](http://doc.cat-v.org/bell_labs/structural_regexps/se.pdf)
+[Nex]: https://github.com/blynn/nex
+[Structural Regular Expressions]: http://doc.cat-v.org/bell_labs/structural_regexps/se.pdf
