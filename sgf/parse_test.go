@@ -32,7 +32,7 @@ func ExampleParse_NoVariation() {
 func ExampleParse_OneVariationAtMove3() {
 	s := `(;FF[4]GM[1]SZ[19];B[aa];W[bb]
 	        (;B[cc];W[dd];B[ad];W[bd])
-					(;B[hh];W[hg]))`
+	        (;B[hh];W[hg]))`
 	fmt.Println(sgf.Parse(s))
 	// Output:
 	// (;FF[4]GM[1]SZ[19];B[aa];W[bb](;B[cc];W[dd];B[ad];W[bd])(;B[hh];W[hg]))
@@ -42,8 +42,8 @@ func ExampleParse_OneVariationAtMove3() {
 func ExampleParse_TwoVariationAtMove3() {
 	s := `(;FF[4]GM[1]SZ[19];B[aa];W[bb]
 	        (;B[cc]N[A];W[dd];B[ad];W[bd])
-          (;B[hh]N[B];W[hg])
-          (;B[gg]N[C];W[gh];B[hh];W[hg];B[kk]))`
+	        (;B[hh]N[B];W[hg])
+	        (;B[gg]N[C];W[gh];B[hh];W[hg];B[kk]))`
 	fmt.Println(sgf.Parse(s))
 	// Output:
 	// (;FF[4]GM[1]SZ[19];B[aa];W[bb](;B[cc]N[A];W[dd];B[ad];W[bd])(;B[hh]N[B];W[hg])(;B[gg]N[C];W[gh];B[hh];W[hg];B[kk]))
@@ -53,10 +53,10 @@ func ExampleParse_TwoVariationAtMove3() {
 func ExampleParse_TwoVariationAtDifferentMoves() {
 	s := `(;FF[4]GM[1]SZ[19];B[aa];W[bb]
 	        (;B[cc];W[dd]
-					  (;B[ad];W[bd])
-            (;B[ee];W[ff])
-					)
-          (;B[hh];W[hg]))`
+	          (;B[ad];W[bd])
+	          (;B[ee];W[ff])
+	        )
+	        (;B[hh];W[hg]))`
 	fmt.Println(sgf.Parse(s))
 	// Output:
 	// (;FF[4]GM[1]SZ[19];B[aa];W[bb](;B[cc];W[dd](;B[ad];W[bd])(;B[ee];W[ff]))(;B[hh];W[hg]))
@@ -66,10 +66,10 @@ func ExampleParse_TwoVariationAtDifferentMoves() {
 func ExampleParse_VariationOfVariation() {
 	s := `(;FF[4]GM[1]SZ[19];B[aa];W[bb]
 	        (;B[cc]N[A];W[dd];B[ad];W[bd])
-          (;B[hh]N[B];W[hg])
-          (;B[gg]N[C];W[gh];B[hh]
-					  (;W[hg]N[A];B[kk])
-						(;W[kl]N[B])))`
+	          (;B[hh]N[B];W[hg])
+	          (;B[gg]N[C];W[gh];B[hh]
+	            (;W[hg]N[A];B[kk])
+	            (;W[kl]N[B])))`
 	fmt.Println(sgf.Parse(s))
 	// Output:
 	// (;FF[4]GM[1]SZ[19];B[aa];W[bb](;B[cc]N[A];W[dd];B[ad];W[bd])(;B[hh]N[B];W[hg])(;B[gg]N[C];W[gh];B[hh](;N[A]W[hg];B[kk])(;N[B]W[kl])))
