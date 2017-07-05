@@ -381,3 +381,66 @@ func BenchmarkBoardString(b *testing.B) {
 		a.String()
 	}
 }
+
+var endlessPlaySetup = []struct {
+	c model.Color
+	p model.Point
+}{
+	{c: B, p: P(1, 2)},
+	{c: B, p: P(2, 1)},
+	{c: B, p: P(3, 2)},
+	{c: W, p: P(1, 3)},
+	{c: W, p: P(2, 2)},
+	{c: W, p: P(3, 3)},
+}
+var endlessPlayLoop = []struct {
+	c model.Color
+	p model.Point
+}{
+	{c: W, p: P(1, 1)},
+	{c: B, p: P(2, 3)},
+	{c: W, p: P(3, 1)},
+	{c: B, p: P(1, 2)},
+	{c: W, p: P(3, 3)},
+	{c: B, p: P(2, 1)},
+	{c: W, p: P(1, 3)},
+	{c: B, p: P(3, 2)},
+}
+
+func ExampleEndlessPlay() {
+	b := model.NewBoard(model.Size(3))
+	// setup
+	for _, a := range endlessPlaySetup {
+		_, _ = b.Place(a.c, a.p)
+	}
+	fmt.Println(b)
+	// loop
+	for _, a := range endlessPlayLoop {
+		_, _ = b.Place(a.c, a.p)
+	}
+	fmt.Println(b)
+	// Output:
+	// +abc+
+	// a ● |
+	// b●◯●|
+	// c◯ ◯|
+	// {3 3} w0 b0
+	// +abc+
+	// a ●+|
+	// b●◯●|
+	// c◯ ◯|
+	// {3 2} w4 b4
+}
+
+func BenchmarkBoardLoop(b *testing.B) {
+	board := model.NewBoard(model.Size(3))
+	for _, a := range endlessPlaySetup {
+		_, _ = board.Place(a.c, a.p)
+	}
+	b.ResetTimer()
+	for n := 0; n < b.N; n++ {
+		for _, a := range endlessPlayLoop {
+			_, _ = board.Place(a.c, a.p)
+		}
+	}
+}
