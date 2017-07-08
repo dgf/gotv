@@ -1,5 +1,7 @@
 package model
 
+import "fmt"
+
 // game board size
 type Size int
 
@@ -9,3 +11,7 @@ const (
 	X13 Size = 13
 	X19 Size = 19
 )
+
+func (s Size) String() string {
+	return fmt.Sprintf("%d", s)
+}

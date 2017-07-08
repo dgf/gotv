@@ -14,6 +14,6 @@ const (
 
 func TestColorString(t *testing.T) {
 	if "B" != B.String() || "W" != W.String() {
-		t.Errorf("color string")
+		t.Error("color string mismatch")
 	}
 }

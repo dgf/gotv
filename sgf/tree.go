@@ -2,6 +2,9 @@ package sgf
 
 import (
 	"bytes"
+
+	"github.com/dgf/gotv/model"
+	"github.com/dgf/gotv/utils"
 )
 
 type Tree struct {
@@ -22,4 +25,19 @@ func (t Tree) String() string {
 	}
 	s.WriteString(")")
 	return s.String()
+}
+
+func (gt *Tree) Decode() (g model.Game) {
+	if len(gt.Sequence) < 1 {
+		return
+	}
+
+	// map root node sequence (order matters for name overrides)
+	utils.SortAndCall(gt.Sequence[0].Properties, func(k, v string) {
+		if d, ok := decoderMap[k]; ok {
+			d(&g, v)
+		}
+	})
+
+	return
 }
