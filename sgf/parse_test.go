@@ -10,13 +10,9 @@ import (
 	"github.com/dgf/gotv/sgf"
 )
 
-// SGF basics and property value types clean up
-func ExampleParseCleanup() {
-	for _, a := range []struct {
-		name string
-		sgf  string
-		exp  string
-	}{
+// SGF basics and property value clean up
+func TestParseCleanup(t *testing.T) {
+	for _, a := range []struct{ name, sgf, exp string }{
 		{"2.1. EBNF spaces", " \n ( \n ; \n AN \n [ebnf] \n ) \n ", "(;AN[ebnf])"},
 		{"3. UcLetter, Digit, None", "(;U[AZ];D[9876543210];N[])", "(;U[AZ];D[9876543210];N[])"},
 		{"3. Number +/-", "(;N[1];N[+1];N[-1])", "(;N[1];N[+1];N[-1])"},
@@ -31,10 +27,9 @@ func ExampleParseCleanup() {
 	} {
 		gs := sgf.Parse(a.sgf).String()
 		if a.exp != gs {
-			fmt.Printf("invalid %s cleanup: \nEXP: %s\nACT: %s\n", a.name, a.exp, gs)
+			t.Errorf("%s cleanup: \nEXP: %s\nACT: %s\n", a.name, a.exp, gs)
 		}
 	}
-	// Output:
 }
 
 // No Variation
