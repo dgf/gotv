@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 )
 
-// rank sorted as int
+// Rank sorted as int
 type Rank int
 
 // rank constants  NR = 0, 30 Kyu = 1, ...
@@ -122,7 +122,7 @@ func init() {
 	}
 }
 
-// stringify, unknown returns NR
+// String rank, unknown returns NR
 func (r Rank) String() string {
 	if r <= 0 || int(r) >= len(labels) {
 		return labels[NR]
@@ -130,12 +130,12 @@ func (r Rank) String() string {
 	return labels[r]
 }
 
-// encode stringified rank
+// MarshalJSON encodes rank
 func (r Rank) MarshalJSON() ([]byte, error) {
 	return json.Marshal(r.String())
 }
 
-// decode rank string
+// ToRank decodes rank
 func ToRank(r string) Rank {
 	return ranks[r]
 }
