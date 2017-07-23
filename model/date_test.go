@@ -3,55 +3,44 @@ package model_test
 import (
 	"encoding/json"
 	"fmt"
-	"strings"
-	"testing"
 
 	"github.com/dgf/gotv/model"
-	"github.com/dgf/gotv/model/testdata"
 )
 
-func TestDateAfter(t *testing.T) {
-	for _, check := range []struct {
-		date  model.Date
-		after model.Date
-	}{
-		{testdata.Yesterday, testdata.Tomorrow},
-		{testdata.Yesterday, testdata.Today},
-		{testdata.Today, testdata.Tomorrow},
-	} {
-		if !check.after.After(check.date) {
-			t.Errorf("! %s < %s", check.date, check.after)
-		}
-	}
+func ExampleDate_After() {
+	today := model.Today()
+	yesterday := today.Add(0, 0, -1)
+
+	fmt.Printf("> %v\n", today.After(yesterday))
+	fmt.Printf("< %v\n", yesterday.After(today))
+
+	// Output:
+	// > true
+	// < false
 }
 
-func TestDateBefore(t *testing.T) {
-	for _, check := range []struct {
-		date   model.Date
-		before model.Date
-	}{
-		{testdata.Tomorrow, testdata.Yesterday},
-		{testdata.Tomorrow, testdata.Today},
-		{testdata.Today, testdata.Yesterday},
-	} {
-		if !check.before.Before(check.date) {
-			t.Errorf("! %s > %s", check.date, check.before)
-		}
-	}
+func ExampleDate_Before() {
+	today := model.Today()
+	tomorrow := today.Add(0, 0, 1)
+
+	fmt.Printf("< %v\n", today.Before(tomorrow))
+	fmt.Printf("> %v\n", tomorrow.Before(today))
+
+	// Output:
+	// < true
+	// > false
 }
 
-func TestDateJSON(t *testing.T) {
-	d := model.Today()
-	i := map[string]model.Date{"today": d}
+func ExampleDate_MarshalJSON() {
+	date := model.ToDate("2017-07-23")
+	data := map[string]model.Date{"date": date}
 
-	j, err := json.Marshal(i)
-	if err != nil {
-		t.Fatal(err)
+	if b, err := json.Marshal(data); err != nil {
+		panic(err)
+	} else {
+		fmt.Print(string(b))
 	}
 
-	act := string(j)
-	exp := fmt.Sprintf(`"%s"`, d)
-	if !strings.Contains(act, exp) {
-		t.Errorf("date JSON marshal\nEXP: contains %s\nACT: %s\n", exp, act)
-	}
+	// Output:
+	// {"date":"2017-07-23"}
 }
