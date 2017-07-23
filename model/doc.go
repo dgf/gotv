@@ -1,2 +1,2 @@
-// Go board and game specific types
+// Package model contains Go Board and Game specific types
 package model
