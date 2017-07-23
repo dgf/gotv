@@ -1,19 +1,28 @@
 package model_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/dgf/gotv/model"
 )
 
-func TestRankString(t *testing.T) {
-	// assert unknown decode = NR
-	unknown := model.ToRank("unknown")
-	if unknown != model.NR {
-		t.Errorf("unknown = NR expected, actual: %s\n", unknown)
-	}
+func ExampleToRank() {
+	fmt.Printf("%s\n", model.ToRank("unknown"))
+	fmt.Printf("%s\n", model.ToRank("5 Kyu"))
+	fmt.Printf("%s\n", model.ToRank("4 Dan"))
+	fmt.Printf("%s\n", model.ToRank("3 Pro"))
+	fmt.Printf("%s\n", model.ToRank("10 Pro"))
+	// Output:
+	// NR
+	// 5 Kyu
+	// 4 Dan
+	// 3 Pro
+	// NR
+}
 
-	// check forward and backward mappings
+// check forward and backward mappings
+func TestRankString(t *testing.T) {
 	for rank, exp := range map[model.Rank]string{
 		model.NR:    "NR",
 		model.Kyu30: "30 Kyu",
@@ -33,7 +42,7 @@ func TestRankString(t *testing.T) {
 
 		// from string equals?
 		if rank != model.ToRank(act) {
-			t.Errorf("ToRank(%s)\nEXP: %#s\nACT: %#s\n", act, rank, model.ToRank(act))
+			t.Errorf("ToRank(%s)\nEXP: %s\nACT: %s\n", act, rank, model.ToRank(act))
 		}
 	}
 }
