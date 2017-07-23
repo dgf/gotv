@@ -3,8 +3,5 @@ go: # use newest Go 1.x version
   - 1.x
 git: # only build the last one
   depth: 1
-deploy:
-  provider: script
-  script: refresh.sh
-  on:
-    branch: master
+after_success:
+  - sh refresh.sh
