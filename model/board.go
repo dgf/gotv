@@ -16,10 +16,13 @@ const (
 )
 
 var (
+	// IGS compatible placement like "R16"
 	rIGS = regexp.MustCompile("^[A-HJ-T]1?[0-9]$")
+	// SGF compatible placement like "rd"
 	rSGF = regexp.MustCompile("^[a-hj-t][a-hj-t]$")
 )
 
+// Board supports a straight forward Go game with capturing and KO + suicide detection
 type Board struct {
 	Size     int
 	Move     int
