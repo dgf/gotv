@@ -6,3 +6,5 @@ git: # only build the last one
 deploy:
   provider: script
   script: refresh.sh
+  on:
+    branch: master
