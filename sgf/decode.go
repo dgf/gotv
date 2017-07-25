@@ -6,10 +6,10 @@ import (
 	"github.com/dgf/gotv/model"
 )
 
-type decodeProp func(g *model.Game, p string)
+type decode func(g *model.Game, p string)
 
 // see https://en.wikipedia.org/wiki/Smart_Game_Format#About_the_format
-var decoderMap = map[string]decodeProp{
+var decoder = map[string]decode{
 
 	// Add Black: locations of Black stones to be placed on the board prior to the first move
 	//"AB": func(g *model.Game, p string) {},

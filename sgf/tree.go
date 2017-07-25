@@ -7,13 +7,14 @@ import (
 	"github.com/dgf/gotv/utils"
 )
 
+// Tree with parent reference, node sequence and subtree slice
 type Tree struct {
 	Parent     *Tree
 	Sequence   []*Node
 	Collection []*Tree
 }
 
-// stringified game tree (encode SGF GameTree)
+// String game tree (encode SGF GameTree)
 func (t Tree) String() string {
 	s := bytes.Buffer{}
 	s.WriteString("(")
@@ -27,14 +28,15 @@ func (t Tree) String() string {
 	return s.String()
 }
 
-func (gt *Tree) Decode() (g model.Game) {
-	if len(gt.Sequence) < 1 {
+// Decode game tree
+func (t *Tree) Decode() (g model.Game) {
+	if len(t.Sequence) < 1 {
 		return
 	}
 
 	// map root node sequence (order matters for name overrides)
-	utils.SortAndCall(gt.Sequence[0].Properties, func(k, v string) {
-		if d, ok := decoderMap[k]; ok {
+	utils.SortAndCall(t.Sequence[0].Properties, func(k, v string) {
+		if d, ok := decoder[k]; ok {
 			d(&g, v)
 		}
 	})

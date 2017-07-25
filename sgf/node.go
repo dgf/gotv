@@ -7,11 +7,12 @@ import (
 	"github.com/dgf/gotv/utils"
 )
 
+// Node properties
 type Node struct {
 	Properties map[string]string
 }
 
-// stringified node with properties sorted by ident (encode SGF Node)
+// String properties sorted by ident (encode SGF Node)
 func (n Node) String() string {
 	s := bytes.Buffer{}
 	s.WriteString(";")

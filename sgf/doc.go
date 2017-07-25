@@ -1,2 +1,2 @@
-// parse SGF into generic game tree collection
+// Package sgf parses and decodes generic game tree collection
 package sgf

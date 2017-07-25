@@ -4,9 +4,10 @@ import (
 	"bytes"
 )
 
+// Collection game trees
 type Collection []*Tree
 
-// stringified tree collection (encode SGF Collection)
+// String tree collection (encode SGF Collection)
 func (c Collection) String() string {
 	s := bytes.Buffer{}
 	for _, t := range c {
