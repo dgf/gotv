@@ -26,7 +26,7 @@ func TestDecode(t *testing.T) {
 		{Name: "w team", White: model.Player{Name: "team"}}:     {"WT": "team"},
 	} {
 		properties["GN"] = game.Name // sync name
-		tree := sgf.Tree{Sequence: []*sgf.Node{&sgf.Node{Properties: properties}}}
+		tree := sgf.Tree{Sequence: []sgf.Node{properties}}
 		act := fmt.Sprintf("%s", tree.Decode()) // String() encodes it back
 		exp := fmt.Sprintf("%s", game)
 		if exp != act {

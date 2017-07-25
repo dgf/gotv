@@ -10,7 +10,7 @@ import (
 // Tree with parent reference, node sequence and subtree slice
 type Tree struct {
 	Parent     *Tree
-	Sequence   []*Node
+	Sequence   []Node
 	Collection []*Tree
 }
 
@@ -35,7 +35,7 @@ func (t *Tree) Decode() (g model.Game) {
 	}
 
 	// map root node sequence (order matters for name overrides)
-	utils.SortAndCall(t.Sequence[0].Properties, func(k, v string) {
+	utils.SortAndCall(t.Sequence[0], func(k, v string) {
 		if d, ok := decoder[k]; ok {
 			d(&g, v)
 		}

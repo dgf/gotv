@@ -62,7 +62,7 @@ func Parse(sgf string) Collection {
 	var (
 		collection Collection
 		tree       *Tree
-		node       *Node
+		node       Node
 		ident      string
 	)
 
@@ -91,7 +91,7 @@ func Parse(sgf string) Collection {
 			}
 
 		case ';': // node
-			node = &Node{Properties: map[string]string{}}
+			node = Node{}
 			tree.Sequence = append(tree.Sequence, node)
 
 		case ')': // end > go one up
@@ -120,7 +120,7 @@ func Parse(sgf string) Collection {
 			}
 
 			// scan property value
-			node.Properties[ident] = scanValue(s)
+			node[ident] = scanValue(s)
 
 			// reset white spaces ignore
 			s.Whitespace = scanner.GoWhitespace
