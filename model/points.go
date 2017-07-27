@@ -41,7 +41,7 @@ func neighbours(size int, point Point) (n []Point) {
 }
 
 // DiffPoints of two point slices
-func DiffPoints(A, B []Point) (d []Point) {
+func DiffPoints(A, B Points) (d Points) {
 	aPoints := map[Point]struct{}{}
 	for _, a := range A {
 		aPoints[a] = struct{}{}
