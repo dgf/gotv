@@ -2,7 +2,6 @@ package model
 
 import (
 	"bytes"
-	"errors"
 	"fmt"
 	"regexp"
 	"sort"
@@ -37,6 +36,7 @@ type Board struct {
 	}
 }
 
+// NewBoard returns empty board
 func NewBoard(s Size) Board {
 	return Board{
 		Size:    int(s),
@@ -46,22 +46,22 @@ func NewBoard(s Size) Board {
 	}
 }
 
-// place a stone, return captures
+// Place a stone, return captures
 func (b *Board) Place(c Color, p Point) (Points, error) {
 
 	// check border
 	if p.X < 1 || p.X > b.Size || p.Y < 1 || p.Y > b.Size {
-		return nil, errors.New(fmt.Sprintf("%v is out", p))
+		return nil, fmt.Errorf("%v is out", p)
 	}
 
 	// check KO
 	if b.KO != nil && b.KO.X == p.X && b.KO.Y == p.Y {
-		return nil, errors.New(fmt.Sprintf("%v is KO", p))
+		return nil, fmt.Errorf("%v is KO", p)
 	}
 
 	// check intersection
 	if _, ok := b.Stones[p]; ok {
-		return nil, errors.New(fmt.Sprintf("%v is occupied", p))
+		return nil, fmt.Errorf("%v is occupied", p)
 	}
 
 	// unique references
@@ -94,7 +94,7 @@ func (b *Board) Place(c Color, p Point) (Points, error) {
 	g := Group{
 		Color:     c,
 		Liberties: liberties,
-		Members:   map[Point]struct{}{p: struct{}{}},
+		Stones:    map[Point]struct{}{p: {}},
 	}
 
 	// merge friends
@@ -103,8 +103,8 @@ func (b *Board) Place(c Color, p Point) (Points, error) {
 			for l := range f.Liberties {
 				g.Liberties[l] = struct{}{}
 			}
-			for m := range f.Members {
-				g.Members[m] = struct{}{}
+			for m := range f.Stones {
+				g.Stones[m] = struct{}{}
 			}
 		}
 		// remove actual stone from merged liberties
@@ -113,7 +113,7 @@ func (b *Board) Place(c Color, p Point) (Points, error) {
 
 	// check suicide
 	if len(captures) == 0 && len(g.Liberties) == 0 {
-		return nil, errors.New(fmt.Sprintf("%v is suicide", p))
+		return nil, fmt.Errorf("%v is suicide", p)
 	}
 
 	// add group
@@ -128,7 +128,7 @@ func (b *Board) Place(c Color, p Point) (Points, error) {
 	}
 
 	// reference the new one
-	for m := range g.Members {
+	for m := range g.Stones {
 		b.Members[m] = b.Move
 	}
 
@@ -141,7 +141,7 @@ func (b *Board) Place(c Color, p Point) (Points, error) {
 	removed := Points{}
 	for id, o := range captures {
 		delete(b.Groups, id)
-		for m := range o.Members {
+		for m := range o.Stones {
 			delete(b.Members, m)
 			delete(b.Stones, m)
 			removed = append(removed, m)
@@ -167,16 +167,17 @@ func (b *Board) Place(c Color, p Point) (Points, error) {
 
 	// detect KO
 	b.KO = nil // one stone with only the captured liberty?
-	if len(removed) == 1 && len(g.Members) == 1 && len(g.Liberties) == 1 {
+	if len(removed) == 1 && len(g.Stones) == 1 && len(g.Liberties) == 1 {
 		b.KO = &removed[0] // mark capture as KO point
 	}
 
 	return removed, nil
 }
 
+// PlaceSGF stone
 func (b *Board) PlaceSGF(c Color, p string) ([]string, error) {
 	if !rSGF.MatchString(p) {
-		return nil, errors.New(fmt.Sprintf("%s is invalid", p))
+		return nil, fmt.Errorf("%s is invalid", p)
 	}
 	s := []string{}
 
@@ -194,9 +195,10 @@ func (b *Board) PlaceSGF(c Color, p string) ([]string, error) {
 	return s, err
 }
 
+// PlaceIGS stone
 func (b *Board) PlaceIGS(c Color, i string) ([]string, error) {
 	if !rIGS.MatchString(i) {
-		return nil, errors.New(fmt.Sprintf("%s is invalid", i))
+		return nil, fmt.Errorf("%s is invalid", i)
 	}
 	s := []string{}
 

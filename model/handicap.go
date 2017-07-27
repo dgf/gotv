@@ -2,10 +2,10 @@ package model
 
 import "fmt"
 
-// handicap of a game
+// Handicap of a game
 type Handicap int
 
-// handicap constants
+// handicap constants: 0, 2, .., 9
 const (
 	H0 Handicap = iota
 	_

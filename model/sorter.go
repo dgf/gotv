@@ -58,24 +58,24 @@ func (s *GameSorter) Sort(games []Game) {
 	sort.Sort(&gameSorter{games: games, less: *s})
 }
 
-// gameSorter implements the Sort interface, sorting the games within.
+// gameSorter implements the Sort interface, sorting the games within
 type gameSorter struct {
 	games []Game
 	less  []LessGame
 }
 
-// Len is part of sort.Interface.
+// Len is part of sort.Interface
 func (gs *gameSorter) Len() int {
 	return len(gs.games)
 }
 
-// Swap is part of sort.Interface.
+// Swap is part of sort.Interface
 func (gs *gameSorter) Swap(i, j int) {
 	gs.games[i], gs.games[j] = gs.games[j], gs.games[i]
 }
 
 // Less is part of sort.Interface. It is implemented by looping along the
-// less functions until it finds a comparison that is either Less or !Less.
+// less functions until it finds a comparison that is either Less or !Less
 func (gs *gameSorter) Less(i, j int) bool {
 	g1, g2 := &gs.games[i], &gs.games[j]
 	var l int // try all but the last

@@ -1,6 +1,6 @@
 package model
 
-// black or white (are no colors, but how to name it?)
+// Color black or white (are no colors, but how to name it?)
 type Color int
 
 // color constants

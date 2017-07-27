@@ -7,14 +7,14 @@ import (
 	"strings"
 )
 
-// a group on the board
+// Group of stones on the board
 type Group struct {
 	Color     Color
 	Liberties map[Point]struct{}
-	Members   map[Point]struct{}
+	Stones    map[Point]struct{}
 }
 
-// stringified group dump with sorted members and liberties
+// String group dump with sorted members and liberties
 // format: (B|W) m[members...] l[liberties...]
 func (g Group) String() string {
 	s := bytes.Buffer{}
@@ -22,13 +22,13 @@ func (g Group) String() string {
 	// color
 	s.WriteString(fmt.Sprintf("%s", g.Color))
 
-	// members
-	members := []string{}
-	for m := range g.Members {
-		members = append(members, fmt.Sprintf("%v", m))
+	// stones
+	stones := []string{}
+	for m := range g.Stones {
+		stones = append(stones, fmt.Sprintf("%v", m))
 	}
-	sort.Strings(members)
-	s.WriteString(fmt.Sprintf(" m%v", members))
+	sort.Strings(stones)
+	s.WriteString(fmt.Sprintf(" m%v", stones))
 
 	// liberties
 	liberties := []string{}
@@ -41,10 +41,10 @@ func (g Group) String() string {
 	return s.String()
 }
 
-// groups by ID
+// Groups map games by ID
 type Groups map[int]Group
 
-// stringified groups dump sorted by ID
+// String groups dump sorted by ID
 // format: ID (B|W) m[members...] l[liberties...]
 func (g Groups) String() string {
 
@@ -55,7 +55,7 @@ func (g Groups) String() string {
 	}
 	sort.Ints(ids)
 
-	// stringify groups by id
+	// stringify groups by ID
 	s := []string{}
 	for _, id := range ids {
 		s = append(s, fmt.Sprintf("%2d %s", id, g[id]))

@@ -2,7 +2,7 @@ package model
 
 import "fmt"
 
-// game board size
+// Size of game or board
 type Size int
 
 // size constants

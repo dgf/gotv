@@ -32,7 +32,7 @@ func TestBoardValidation(t *testing.T) {
 	}
 }
 
-func ExampleBoardGroups() {
+func ExampleBoard_Groups() {
 	b := model.NewBoard(model.Size(4))
 	for _, a := range []struct {
 		c model.Color
@@ -106,7 +106,7 @@ func ExampleBoardGroups() {
 	// {1 2} w1 b3
 }
 
-func ExampleBoardKO() {
+func ExampleBoard_KO() {
 	b := model.NewBoard(model.Size(4))
 
 	_, _ = b.Place(B, P(1, 1))
@@ -219,7 +219,7 @@ func ExampleBoardKO() {
 	// 18 W m[{1 1} {1 2} {2 1} {3 1} {4 1} {4 2}] l[{4 3}]
 }
 
-func ExampleBoardSuicide() {
+func ExampleBoard_suicide() {
 	b := model.NewBoard(model.Size(4))
 
 	// setup
@@ -268,7 +268,7 @@ func ExampleBoardSuicide() {
 	//{4 3} w0 b0
 }
 
-func ExampleBoardSGF() {
+func ExampleBoard_PlaceSGF() {
 	b := model.NewBoard(model.X9)
 	for _, a := range []struct {
 		c model.Color
@@ -319,7 +319,7 @@ func TestCaptureSGF(t *testing.T) {
 	}
 }
 
-func ExampleBoardIGS() {
+func ExampleBoard_PlaceIGS() {
 	b := model.NewBoard(model.X13)
 	for _, a := range []struct {
 		c model.Color
@@ -378,7 +378,7 @@ func BenchmarkBoardString(b *testing.B) {
 	a := model.NewBoard(model.X9)
 	b.ResetTimer()
 	for n := 0; n < b.N; n++ {
-		a.String()
+		_ = a.String()
 	}
 }
 
@@ -407,7 +407,7 @@ var endlessPlayLoop = []struct {
 	{c: B, p: P(3, 2)},
 }
 
-func ExampleEndlessPlay() {
+func ExampleBoard_endlessPlay() {
 	b := model.NewBoard(model.Size(3))
 	// setup
 	for _, a := range endlessPlaySetup {
