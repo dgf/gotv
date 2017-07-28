@@ -14,42 +14,42 @@ func GameOrder(less ...LessGame) GameSorter {
 }
 
 // ByDate newest first
-var ByDate = func(g1, g2 *Game) bool {
+var ByDate LessGame = func(g1, g2 *Game) bool {
 	return g1.Date.After(g2.Date)
 }
 
 // ByDateDesc oldest first
-var ByDateDesc = func(g1, g2 *Game) bool {
+var ByDateDesc LessGame = func(g1, g2 *Game) bool {
 	return g1.Date.Before(g2.Date)
 }
 
 // ByHandicap lowest first
-var ByHandicap = func(g1, g2 *Game) bool {
+var ByHandicap LessGame = func(g1, g2 *Game) bool {
 	return g1.Handicap < g2.Handicap
 }
 
 // ByHandicapDesc highest first
-var ByHandicapDesc = func(g1, g2 *Game) bool {
+var ByHandicapDesc LessGame = func(g1, g2 *Game) bool {
 	return g1.Handicap > g2.Handicap
 }
 
 // ByRank highest first
-var ByRank = func(g1, g2 *Game) bool {
+var ByRank LessGame = func(g1, g2 *Game) bool {
 	return MaxRank(g1.Black, g1.White) > MaxRank(g2.Black, g2.White)
 }
 
 // ByRankDesc lowest first
-var ByRankDesc = func(g1, g2 *Game) bool {
+var ByRankDesc LessGame = func(g1, g2 *Game) bool {
 	return MinRank(g1.Black, g1.White) < MinRank(g2.Black, g2.White)
 }
 
 // BySize greatest first
-var BySize = func(g1, g2 *Game) bool {
+var BySize LessGame = func(g1, g2 *Game) bool {
 	return g1.Size > g2.Size
 }
 
 // BySizeDesc smallest first
-var BySizeDesc = func(g1, g2 *Game) bool {
+var BySizeDesc LessGame = func(g1, g2 *Game) bool {
 	return g1.Size < g2.Size
 }
 
