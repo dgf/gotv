@@ -5,6 +5,10 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"net/http"
+
+	"github.com/dgf/gotv/memory"
+	"github.com/dgf/gotv/web"
 )
 
 var (
@@ -15,5 +19,5 @@ var (
 func main() {
 	flag.Parse()
 	addr := fmt.Sprintf("%s:%d", *host, *port)
-	log.Printf("start %s\n", addr)
+	log.Fatal(http.ListenAndServe(addr, web.New("GoTV", memory.New())))
 }
