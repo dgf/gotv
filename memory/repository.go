@@ -2,7 +2,6 @@ package memory
 
 import (
 	"errors"
-	"fmt"
 	"sync"
 
 	"github.com/dgf/gotv/api"
@@ -15,7 +14,7 @@ type repository struct {
 }
 
 // New creates a fresh in-memory game repository
-func New() api.GameRepository {
+func New() api.Repository {
 	return &repository{
 		games: []model.Game{},
 	}
@@ -76,6 +75,5 @@ func (r *repository) List(f model.Filter, s model.GameSorter, p api.Page) ([]mod
 	}
 
 	// page it
-	fmt.Printf("%d:%d\n", p.Start-1, p.Start-1+p.Count)
 	return filtered[p.Start-1 : p.Start-1+p.Count], nil
 }

@@ -10,8 +10,8 @@ type Page struct {
 	Count int
 }
 
-// GameRepository games
-type GameRepository interface {
+// Repository games
+type Repository interface {
 
 	// Add returns ID of stored game
 	Add(g model.Game) (int, error)
