@@ -67,6 +67,9 @@ func TestSortOrder(t *testing.T) {
 		games  []model.Game
 	}{
 		{
+			"by nothing", []string{"g1", "g2"}, model.GameSorter{}, []model.Game{{Name: "g1"}, {Name: "g2"}},
+		},
+		{
 			"by date", []string{"tm", "ty", "yd"}, model.GameOrder(model.ByDate), []model.Game{
 				{Name: "yd", Date: testdata.Yesterday},
 				{Name: "tm", Date: testdata.Tomorrow},

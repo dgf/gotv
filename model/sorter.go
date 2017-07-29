@@ -54,8 +54,10 @@ var BySizeDesc LessGame = func(g1, g2 *Game) bool {
 }
 
 // Sort sorts the argument slice according to the less functions passed to OrderedBy.
-func (s *GameSorter) Sort(games []Game) {
-	sort.Sort(&gameSorter{games: games, less: *s})
+func (s GameSorter) Sort(games []Game) {
+	if len(s) > 0 {
+		sort.Sort(&gameSorter{games: games, less: s})
+	}
 }
 
 // gameSorter implements the Sort interface, sorting the games within
